@@ -22,10 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+/**
+ * @file princess
+ * @author Victor Woeltjen <vwoeltjen@gmail.com>
+ * @project princess
+ * @license MIT {@link http://opensource.org/licenses/MIT}
+ */
 (function () {
+  /**
+   * A minimalist scoped dependency injector.
+   * @module princess
+   */
   "use strict";
   
-  function scope(parents) {
+  /**
+   * @interface
+   */
+  function Scope(parents) {
     var registered = {},
       instantiated = {};
     
@@ -51,24 +65,76 @@ SOFTWARE.
       return fn.apply(null, deps.map(lookup));
     }
     
-    // A di scope is a function used to register tings
+    /**
+     * A dependency injection scope.
+     * @typedef {Function} Scope
+     */
     function self(name, deps, fn, scope) {
       scope = scope || self;
       registered[name] = registered[name] || function () {
         return scope.run(deps, fn);
       };
+      return self;
     }
-        
+    
+    /**
+     * Run a function using dependencies.
+     * @memberof Scope#
+     * @param {string[]} deps dependencies of this function
+     * @param {Function} fn a function to invoke with that dependency
+     * @returns {*} the return value of the provided function
+     */
     self.run = run;
+    
+    /**
+     * Look up a dependency from this scope.
+     * @memberof Scope#
+     * @param {string} name name of the object to look up
+     * @returns {*} the registered object
+     */
     self.get = lookup;
+    
+    /**
+     * Create a new scope.
+     *
+     * If no argument is provided, this will be a child of the
+     * current scope.
+     *
+     * If an array of scopes is provided, this will be a child
+     * of those scopes.
+     *
+     * An empty array can be provided to create a detached scope
+     * which inherits from no other scopes.
+     *
+     * @param {Scope[]} [scopes] parent scopes
+     * @returns {Scope} the new scope
+     */
     self.scope = function (scopes) {
-      return scope(scopes !== undefined ? scopes : [self]);
+      return new Scope(scopes !== undefined ? scopes : [self]);
     };
+    
+    /**
+     * Check if something of this name has been registered.
+     * @memberof Scope#
+     * @param {string} name name of the registered object
+     */
     self.has = function (name) {
       return registered[name] !== undefined || parents.some(function (scope) {
         return scope.has(name);
       });
     };
+
+    /**
+     * Register an object in this dependency injection scope.
+     * @memberof Scope#
+     * @param {string} name name of the object to register
+     * @param {string[]} deps dependencies of the registered object
+     * @param {Function} fn function which will return this object
+     * @param {Scope} [scope] scope from which to look up dependencies
+     *        (if omitted, will use the same scope.)
+     * @returns {Scope} the current scope
+     */
+    self.register = self;
     
     // Default to no parent scopes
     parents = parents || [];
@@ -76,6 +142,11 @@ SOFTWARE.
     return self;
   }
   
-  module.exports = scope();
+
+  
+  /**
+   * @type {Scope}
+   */
+  module.exports = new Scope();
 }());
 

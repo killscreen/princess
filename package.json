@@ -4,7 +4,8 @@
   "description": "Tiny scoped dependency injector.",
   "main": "princess.js",
   "scripts": {
-    "test": "jasmine-node spec"
+    "test": "jasmine-node spec",
+    "docs": "jsdoc2md princess.js > README.md"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,8 @@
     "url": "https://github.com/killscreen/princess/issues"
   },
   "devDependencies": {
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "jsdoc": "^1.1.1"
   },
   "homepage": "https://github.com/killscreen/princess"
 }
