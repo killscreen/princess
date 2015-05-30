@@ -25,6 +25,13 @@
       expect(child.has('xyz')).toBeTruthy();
     });
     
+    it("reports dependency registration among children", function () {
+      var parent = di.scope([]), child = parent.scope();
+      expect(child.has('xyz')).toBeFalsy();
+      parent('xyz', [], function () {});
+      expect(child.has('xyz')).toBeTruthy();
+    });
+    
     it("exposes dependencies directly", function () {
       var child = di.scope([]);
       child('xyz', [], function () { return "XYZ!"; });
@@ -32,8 +39,22 @@
     });
     
     it("allows child scopes to override dependencies", function () {
-      var child = di.scope();
-      di('foo', [], function () {
+      var parent = di.scope([]), child = parent.scope();
+      parent('foo', [], function () {
+        return 'FOO!';
+      });
+      child('bar', ['foo'], function (foo) {
+        return foo + ' BAR?';
+      });
+      expect(child.run(['bar'], function (bar) {
+        return bar;
+      })).toEqual('FOO! BAR?');
+    });
+    
+    it("finds dependencies among parents", function () {
+      var parents = [di.scope([]), di.scope([])],
+        child = di.scope(parents);
+      parents[1]('foo', [], function () {
         return 'FOO!';
       });
       child('bar', ['foo'], function (foo) {
