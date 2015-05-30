@@ -22,6 +22,6 @@
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5"
-  }
+  },
   "homepage": "https://github.com/killscreen/princess"
 }

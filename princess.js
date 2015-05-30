@@ -29,15 +29,11 @@ SOFTWARE.
     var registered = {},
       instantiated = {};
     
-    function echo(value) {
-      return value;
-    }
-    
     function find(dep) {
       var i;
       for (i = 0; i < parents.length; i += 1) {
         if (parents[i].has(dep)) {
-          return parents[i].run([dep], echo);
+          return parents[i].get(dep);
         }
       }
     }
@@ -64,8 +60,9 @@ SOFTWARE.
     }
         
     self.run = run;
+    self.get = lookup;
     self.scope = function (scopes) {
-      return scope(scopes === undefined ? scopes : [self]);
+      return scope(scopes !== undefined ? scopes : [self]);
     };
     self.has = function (name) {
       return registered[name] !== undefined || parents.some(function (scope) {
