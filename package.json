@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5",
-    "jsdoc": "^1.1.1"
+    "jsdoc-to-markdown": "^1.0.0"
   },
   "homepage": "https://github.com/killscreen/princess"
 }

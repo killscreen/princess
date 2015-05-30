@@ -37,7 +37,9 @@ SOFTWARE.
   "use strict";
   
   /**
-   * @interface
+   * A dependency injection scope.
+   *
+   * @interface Scope
    */
   function Scope(parents) {
     var registered = {},
@@ -65,10 +67,6 @@ SOFTWARE.
       return fn.apply(null, deps.map(lookup));
     }
     
-    /**
-     * A dependency injection scope.
-     * @typedef {Function} Scope
-     */
     function self(name, deps, fn, scope) {
       scope = scope || self;
       registered[name] = registered[name] || function () {
@@ -79,7 +77,7 @@ SOFTWARE.
     
     /**
      * Run a function using dependencies.
-     * @memberof Scope#
+     * @method Scope#run
      * @param {string[]} deps dependencies of this function
      * @param {Function} fn a function to invoke with that dependency
      * @returns {*} the return value of the provided function
@@ -88,7 +86,7 @@ SOFTWARE.
     
     /**
      * Look up a dependency from this scope.
-     * @memberof Scope#
+     * @method Scope#get
      * @param {string} name name of the object to look up
      * @returns {*} the registered object
      */
@@ -106,6 +104,7 @@ SOFTWARE.
      * An empty array can be provided to create a detached scope
      * which inherits from no other scopes.
      *
+     * @method Scope#scope
      * @param {Scope[]} [scopes] parent scopes
      * @returns {Scope} the new scope
      */
@@ -115,7 +114,7 @@ SOFTWARE.
     
     /**
      * Check if something of this name has been registered.
-     * @memberof Scope#
+     * @method Scope#has
      * @param {string} name name of the registered object
      */
     self.has = function (name) {
@@ -126,7 +125,7 @@ SOFTWARE.
 
     /**
      * Register an object in this dependency injection scope.
-     * @memberof Scope#
+     * @method Scope#register
      * @param {string} name name of the object to register
      * @param {string[]} deps dependencies of the registered object
      * @param {Function} fn function which will return this object
@@ -141,8 +140,6 @@ SOFTWARE.
     
     return self;
   }
-  
-
   
   /**
    * @type {Scope}
